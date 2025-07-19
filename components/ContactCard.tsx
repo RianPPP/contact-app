@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+
 import { supabase } from '../lib/supabase';
 import { Contact } from '../types/contact';
 
@@ -22,13 +22,8 @@ export default function ContactCard({ contact, onDelete }: Props) {
                 <p><strong>{contact.name}</strong> ({contact.group || 'No Group'})</p>
                 <p>{contact.email}</p>
                 <p>{contact.phone}</p>
-                {contact.image && <Image
-                    src={contact.image}
-                    alt={contact.name}
-                    width={40}
-                    height={40}
-                    className="avatar"
-                />}
+                       {contact.image && <img src={contact.image} alt={contact.name} className="h-16 mt-1" />}
+
             </div>
             <div className="flex gap-2">
                 <Link href={`/edit/${contact.id}`} className="btn">Edit</Link>

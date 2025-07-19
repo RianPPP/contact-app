@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import Image from 'next/image';
+
 import { supabase } from '../lib/supabase';
 import { Contact } from '../types/contact';
 
@@ -81,12 +81,7 @@ export default function Home() {
                                     <td>{contact.group || '-'}</td>
                                     <td>
                                         {contact.image ? (
-                                            <Image
-                                                src={contact.image}
-                                                alt={contact.name}
-                                                width={40}
-                                                height={40}
-                                                className="avatar"
+                                            <img  src={contact.image} alt="avatar" className="avatar"
                                             />
                                         ) : (
                                             <span>–</span>
