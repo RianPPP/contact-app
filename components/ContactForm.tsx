@@ -2,12 +2,14 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { uploadImage } from '../lib/cloudinary';
 import { supabase } from '../lib/supabase';
-
 import { ContactFormProps } from '../types/contact';
 
-export default function ContactForm({ defaultValues = {}, isEdit = false }: ContactFormProps)
- {
-  const [form, setForm] = useState({
+export default function ContactForm({
+   defaultValues = {}, 
+   isEdit = false 
+  }: ContactFormProps){
+
+    const [form, setForm] = useState({
     name: defaultValues.name || '',
     email: defaultValues.email || '',
     phone: defaultValues.phone || '',
