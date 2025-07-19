@@ -7,3 +7,8 @@ export type Contact = {
   image?: string;
   created_at?: string;
 };
+
+export type ContactFormProps = {
+  defaultValues?: Partial<Contact>;
+  isEdit?: boolean;
+};

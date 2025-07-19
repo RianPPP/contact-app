@@ -1,111 +1,118 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
+import Image from 'next/image';
 import { supabase } from '../lib/supabase';
 import { Contact } from '../types/contact';
 
 export default function Home() {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [search, setSearch] = useState('');
-  const [groupFilter, setGroupFilter] = useState('');
-  const [sortAsc, setSortAsc] = useState(true);
+    const [contacts, setContacts] = useState<Contact[]>([]);
+    const [search, setSearch] = useState('');
+    const [groupFilter, setGroupFilter] = useState('');
+    const [sortAsc, setSortAsc] = useState(true);
 
-  const fetchContacts = async () => {
-    const { data } = await supabase.from('contacts').select('*');
-    setContacts(data || []);
-  };
+    const fetchContacts = async () => {
+        const { data } = await supabase.from('contacts').select('*');
+        setContacts(data || []);
+    };
 
-  useEffect(() => {
-    fetchContacts();
-  }, []);
+    useEffect(() => {
+        fetchContacts();
+    }, []);
 
-  const filtered = contacts
-    .filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
-    .filter((c) => (groupFilter ? c.group === groupFilter : true))
-    .sort((a, b) => (sortAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)));
+    const filtered = contacts
+        .filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
+        .filter((c) => (groupFilter ? c.group === groupFilter : true))
+        .sort((a, b) => (sortAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)));
 
-  return (
-    <>
-      <Head>
-        <title>Contact List</title>
-      </Head>
+    return (
+        <>
+            <Head>
+                <title>Contact List</title>
+            </Head>
 
-      <div className="container">
-        <div className="header">
-          <h1>📇 Contacts</h1>
-          <Link href="/create" className="add-button">
-            + Add Contact
-          </Link>
-        </div>
+            <div className="container">
+                <div className="header">
+                    <h1>📇 Contacts</h1>
+                    <Link href="/create" className="add-button">
+                        + Add Contact
+                    </Link>
+                </div>
 
-        <div className="filters">
-          <input
-            type="text"
-            placeholder="Search by name..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <select value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}>
-            <option value="">All Groups</option>
-            <option value="Friends">Friends</option>
-            <option value="Work">Work</option>
-            <option value="Family">Family</option>
-          </select>
-          <button onClick={() => setSortAsc(!sortAsc)}>Sort: {sortAsc ? 'A-Z' : 'Z-A'}</button>
-        </div>
+                <div className="filters">
+                    <input
+                        type="text"
+                        placeholder="Search by name..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                    <select value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}>
+                        <option value="">All Groups</option>
+                        <option value="Friends">Friends</option>
+                        <option value="Work">Work</option>
+                        <option value="Family">Family</option>
+                    </select>
+                    <button onClick={() => setSortAsc(!sortAsc)}>Sort: {sortAsc ? 'A-Z' : 'Z-A'}</button>
+                </div>
 
-        <div className="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Group</th>
-                <th>Image</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan={6}>No contacts found.</td>
-                </tr>
-              )}
-              {filtered.map((contact) => (
-                <tr key={contact.id}>
-                  <td>{contact.name}</td>
-                  <td>{contact.email}</td>
-                  <td>{contact.phone || '-'}</td>
-                  <td>{contact.group || '-'}</td>
-                  <td>
-                    {contact.image ? (
-                      <img src={contact.image} alt="avatar" className="avatar" />
-                    ) : (
-                      <span>–</span>
-                    )}
-                  </td>
-                  <td className="actions">
-                    <Link href={`/edit/${contact.id}`}>Edit</Link>
-                    <button
-                      onClick={async () => {
-                        if (confirm('Are you sure you want to delete this contact?')) {
-                          await supabase.from('contacts').delete().eq('id', contact.id);
-                          fetchContacts();
-                        }
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                <div className="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Group</th>
+                                <th>Image</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filtered.length === 0 && (
+                                <tr>
+                                    <td colSpan={6}>No contacts found.</td>
+                                </tr>
+                            )}
+                            {filtered.map((contact) => (
+                                <tr key={contact.id}>
+                                    <td>{contact.name}</td>
+                                    <td>{contact.email}</td>
+                                    <td>{contact.phone || '-'}</td>
+                                    <td>{contact.group || '-'}</td>
+                                    <td>
+                                        {contact.image ? (
+                                            <Image
+                                                src={contact.image}
+                                                alt={contact.name}
+                                                width={40}
+                                                height={40}
+                                                className="avatar"
+                                            />
+                                        ) : (
+                                            <span>–</span>
+                                        )}
+                                    </td>
+                                    <td className="actions">
+                                        <Link href={`/edit/${contact.id}`}>Edit</Link>
+                                        <button
+                                            onClick={async () => {
+                                                if (confirm('Are you sure you want to delete this contact?')) {
+                                                    await supabase.from('contacts').delete().eq('id', contact.id);
+                                                    fetchContacts();
+                                                }
+                                            }}
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-      <style jsx>{`
+            <style jsx>{`
         body {
           margin: 0;
           font-family: 'Segoe UI', sans-serif;
@@ -193,6 +200,6 @@ export default function Home() {
           color: #e00;
         }
       `}</style>
-    </>
-  );
+        </>
+    );
 }

@@ -3,7 +3,10 @@ import { useState } from 'react';
 import { uploadImage } from '../lib/cloudinary';
 import { supabase } from '../lib/supabase';
 
-export default function ContactForm({ defaultValues = {}, isEdit = false }: any) {
+import { ContactFormProps } from '../types/contact';
+
+export default function ContactForm({ defaultValues = {}, isEdit = false }: ContactFormProps)
+ {
   const [form, setForm] = useState({
     name: defaultValues.name || '',
     email: defaultValues.email || '',
